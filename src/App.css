@@ -4,8 +4,6 @@ body {
 }
 
 .App {
-  /* width: 100%; */
-  /* height: auto; */
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -18,9 +16,11 @@ body {
   background-color: black;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   font-family: Arial, Helvetica, sans-serif;
 
 }
+
 
 .NavBar a {
   color: white;
@@ -33,3 +33,17 @@ body {
   text-decoration: none;
   color: #a9a9a9;
 } 
+
+.logoutBtn{
+ display: flex;
+ align-items: center;
+  
+}
+
+ .NavBar button {
+  width: 100px;
+  height: 40px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
