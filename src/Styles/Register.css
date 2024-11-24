@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 500px;
+  width: 400px;
   height: auto;
   padding: 20px;
   border: 5px solid black;
@@ -11,31 +11,33 @@
 }
 
 .formContainer #inputUsername {
-  height: 40px;
+  height: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
   border: 2px solid grey;
   border-radius: 5px;
   padding-left: 10px;
-  font-size: 20px;
+  font-size: 15px;
 }
 .formContainer #inputPassword {
-  height: 40px;
+  height: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
   border: 2px solid grey;
   border-radius: 5px;
   padding-left: 10px;
-  font-size: 20px;
+  font-size: 15px;
 }
 
 .formContainer button {
   margin-top: 15px;
-  height: 40px;
+  height: 30px;
   border: none;
-  background-color: lightskyblue;
+  background-color: black;
   border-radius: 5px;
   color: white;
+  width: 50%;
+  align-self: center;
 }
 
 .formContainer button:hover {

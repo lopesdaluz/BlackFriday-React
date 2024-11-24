@@ -18,9 +18,23 @@ export function Register() {
     username: Yup.string().min(3).max(15).required(),
     password: Yup.string().min(3).max(15).required(),
   });
+
+  // Handle form submission
+  const handleSubmit = async (values) => {
+    // Simulate form submission (you can later replace this with actual backend logic)
+    console.log("Form data submitted:", values);
+
+    // Simulate a successful registration message
+    alert("Form submitted successfully! (Backend not connected yet)");
+  };
+
   return (
     <div>
-      <Formik initialValues={initialValues} validationSchema={validationSchema}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
         <Form className="formContainer">
           <label>Name:</label>
           <ErrorMessage name="name" component="div" className="errorMessage" />
@@ -74,7 +88,7 @@ export function Register() {
             name="password"
             placeholder="Your password"
           />
-          <button>Sign up!</button>
+          <button type="submit">Sign up!</button>
         </Form>
       </Formik>
     </div>
