@@ -4,6 +4,7 @@ import { Deals } from "./Pages/Deals";
 import { Categories } from "./Pages/Categories";
 import { About } from "./Pages/About";
 import { Login } from "./Pages/Login";
+import { Register } from "./Pages/Register";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <h1>Black Friday</h1>
         <nav className="NavBar">
           <div className="links">
+            <Link to="Register">Register</Link>
             <Link to="Login">Login</Link>
             <Link to="Home">Home</Link>
             <Link to="Deals">Deals</Link>
@@ -25,6 +27,7 @@ function App() {
         </nav>
 
         <Routes>
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
           <Route path="/deals" element={<Deals />} />

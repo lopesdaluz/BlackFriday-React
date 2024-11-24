@@ -11,11 +11,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "formik": "^2.4.6",
     "mysql2": "^3.11.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
