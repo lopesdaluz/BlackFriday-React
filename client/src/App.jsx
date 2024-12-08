@@ -1,4 +1,4 @@
-import "./App.css";
+import "../src/Styles/App.css";
 import { Home } from "./Pages/Home";
 import { Deals } from "./Pages/Deals";
 import { Categories } from "./Pages/Categories";

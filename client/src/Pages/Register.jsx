@@ -14,7 +14,10 @@ export function Register() {
   const validationSchema = Yup.object().shape({
     name: Yup.string().min(3).max(15).required(),
     lastname: Yup.string().min(3).max(15).required(),
-    email: Yup.string().min(3).max(15).required(),
+    // email: Yup.string().min(3).max(15).required(),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
     username: Yup.string().min(3).max(15).required(),
     password: Yup.string().min(3).max(15).required(),
   });
@@ -30,6 +33,8 @@ export function Register() {
         body: JSON.stringify(values),
       });
       const data = await response.json();
+      console.log("Response from backend:", data);
+
       if (response.ok) {
         alert("user registered successfully");
       } else {
