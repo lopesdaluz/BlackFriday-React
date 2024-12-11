@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // const { Users } = require("../models");
-const { User } = require("../models");
+const User = require("../models/Users.js");
 
 //Registration
 router.post("/register", async (req, res) => {
@@ -27,7 +27,6 @@ router.post("/register", async (req, res) => {
       .status(201)
       .json({ message: "User created successfully", user: newUser });
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ error: "Failed to create user" });
   }
 });

@@ -33,10 +33,10 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-//test
-app.get("/test", (req, res) => {
-  res.json({ message: "Backend is working" });
-});
+// //test
+// app.get("/test", (req, res) => {
+//   res.json({ message: "Backend is working" });
+// });
 
 // Import the users router from the routes folder
 const usersRouter = require("./routes/Users");
