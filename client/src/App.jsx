@@ -5,6 +5,7 @@ import { Categories } from "./Pages/Categories";
 import { About } from "./Pages/About";
 import { Login } from "./Pages/Login";
 import { Register } from "./Pages/Register";
+import LogoutButton from "./Pages/Logout";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
@@ -21,8 +22,9 @@ function App() {
             <Link to="/Categories">Categories</Link>
             <Link to="/About">About</Link>
           </div>
+
           <div className="logoutBtn">
-            <button>Logout</button>
+            <LogoutButton />
           </div>
         </nav>
 
