@@ -1,8 +1,11 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "../Styles/Register.css";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
+  const navigate = useNavigate();
+
   const initialValues = {
     username: "",
     password: "",
@@ -27,6 +30,7 @@ export function Login() {
 
       if (response.ok) {
         alert("Login sueccessful");
+        navigate("/");
       } else {
         alert(`Error: ${data.error}`);
       }
