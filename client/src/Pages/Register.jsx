@@ -32,13 +32,15 @@ export function Register() {
         },
         body: JSON.stringify(values),
       });
-      const data = await response.json();
-      console.log("Response from backend:", data);
+      const text = await response.text();
+      console.log("Response from backend:", text);
 
       if (response.ok) {
-        alert("user registered successfully");
+        // alert("user registered successfully");
+        const data = JSON.parse(text); // Parse the JSON if the response is valid
+        console.log("Parsed JSON:", data);
       } else {
-        alert(`Error: ${data.error}`);
+        alert(`Error: ${text.error}`);
       }
     } catch (err) {
       console.error("Error during registration:", err);

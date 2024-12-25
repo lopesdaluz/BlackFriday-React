@@ -13,9 +13,36 @@ export function Login() {
     password: Yup.string().min(3).max(15).required("password is required"),
   });
 
+  const handleSubmit = async (values) => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await response.json();
+      console.log("Response from backend", data);
+
+      if (response.ok) {
+        alert("Login sueccessful");
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (err) {
+      console.error("Error during login", err);
+      alert("Something went wrong! Please try again");
+    }
+  };
+
   return (
     <div>
-      <Formik initialValues={initialValues} validationSchema={validationSchema}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
         <Form className="formContainer">
           <label>Username:</label>
           <ErrorMessage
@@ -41,7 +68,7 @@ export function Login() {
             id="inputPassword"
             placeholder="Your password"
           />
-          <button type="Submit">Log in</button>
+          <button type="submit">Log in</button>
         </Form>
       </Formik>
     </div>
