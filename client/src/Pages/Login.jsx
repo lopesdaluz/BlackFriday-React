@@ -68,6 +68,7 @@ export function Login() {
           />
           <Field
             autoComplete="Off"
+            type="password"
             name="password"
             id="inputPassword"
             placeholder="Your password"
