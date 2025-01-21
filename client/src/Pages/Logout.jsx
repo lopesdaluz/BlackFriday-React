@@ -1,11 +1,11 @@
 import "../Styles/Register.css";
 import { useNavigate } from "react-router-dom";
 
-function LogoutButton() {
+function LogoutButton({ setIsLoggedIn }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Add any cleanup logic here, like removing auth tokens
+    setIsLoggedIn(false);
     navigate("/login"); // Redirect to login page after logout
   };
 
