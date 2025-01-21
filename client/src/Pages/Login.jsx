@@ -2,14 +2,22 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "../Styles/Register.css";
 import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-export function Login() {
+export function Login({ setIsLoggedIn }) {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const initialValues = {
-    username: "",
-    password: "",
-  };
+  useEffect(() => {
+    setUsername("");
+    setPassword("");
+  }, []);
+
+  // const initialValues = {
+  //   username: "",
+  //   password: "",
+  // };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().min(3).max(15).required("Username is required"),
@@ -30,6 +38,7 @@ export function Login() {
 
       if (response.ok) {
         alert("Login sueccessful");
+        setIsLoggedIn(true);
         navigate("/");
       } else {
         alert(`Error: ${data.error}`);
@@ -43,7 +52,7 @@ export function Login() {
   return (
     <div>
       <Formik
-        initialValues={initialValues}
+        initialValues={{ username, password }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
