@@ -12,6 +12,7 @@ export function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -49,6 +50,12 @@ export function Home() {
         );
         const objects = await objectsResponse.json();
         console.log("Objects fetched:", objects);
+
+        const filteredArtItems = objects.objectIDs
+          .slice(0, 10)
+          .filter((objectId) =>
+            objectId.toString().includes(searchQuery.toLowerCase())
+          );
 
         const artItems = await Promise.all(
           objects.objectIDs.slice(0, 10).map(async (objectId) => {
@@ -109,11 +116,16 @@ export function Home() {
       setLoading(false);
     }
   };
-
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
   useEffect(() => {
-    fetchArtItems();
-    fetchHomeImages();
-  }, []);
+    if (searchQuery.trim()) {
+      fetchArtItems();
+      fetchHomeImages();
+    }
+  }, [searchQuery]);
+
   return (
     <div>
       <h1>Choose a category and create or find deals</h1>
@@ -123,6 +135,8 @@ export function Home() {
           key={category}
           category={category}
           onClick={() => handleCategoryClick(category)}
+          searchQuery={searchQuery}
+          handleSearchChange={handleSearchChange}
         />
       ))}
 
@@ -163,3 +177,6 @@ export function Home() {
 //     </div>
 //   );
 // }
+
+//why am i only sending in the prop artitem in carousel component
+//why am i rendering artItem if selectdCategory is true
