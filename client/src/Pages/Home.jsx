@@ -14,6 +14,10 @@ export function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
 
@@ -23,6 +27,13 @@ export function Home() {
       fetchHomeImages();
     }
   };
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      fetchArtItems();
+      fetchHomeImages();
+    }
+  }, [searchQuery]);
 
   const fetchArtItems = async () => {
     setLoading(true); // Start loading
@@ -116,15 +127,6 @@ export function Home() {
       setLoading(false);
     }
   };
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      fetchArtItems();
-      fetchHomeImages();
-    }
-  }, [searchQuery]);
 
   return (
     <div>

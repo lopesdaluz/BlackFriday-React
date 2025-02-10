@@ -5,7 +5,7 @@ const CategoryComponent = ({
   category,
   onClick,
   searchQuery,
-  handleserachChange,
+  handleSearchChange,
 }) => {
   return (
     <div>
@@ -13,7 +13,7 @@ const CategoryComponent = ({
       <input
         type="text"
         value={searchQuery}
-        onChange={handleserachChange}
+        onChange={handleSearchChange}
         placeholder="search..."
         className="search-bar"
       ></input>
