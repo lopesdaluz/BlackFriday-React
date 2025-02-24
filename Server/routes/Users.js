@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
       .status(201)
       .json({ message: "User created successfully", user: newUser });
   } catch (err) {
+    console.error("Error during registration:", err);
     return res.status(500).json({ error: "Failed to create user" });
   }
 });
@@ -48,13 +49,20 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "Invalid username or password" });
     }
+
+    console.log("User found:", user);
+
     //compare the password wit hashed
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid username or password" });
     }
     //if login is successfully
-    res.status(200).json({ message: "Login successfully" });
+    res.status(200).json({
+      message: "Login successfully",
+      username: user.username,
+      userId: user._id,
+    });
   } catch (err) {
     console.error("Error during login", err);
     res.status(500).json({ error: "Server error" });

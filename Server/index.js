@@ -49,8 +49,8 @@ io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
   //handle incoming messages
-  socket.on("send_message", (data) => {
-    io.emit("receive_message", data);
+  socket.on("send_message", (msgWithUserInfo) => {
+    io.emit("receive_message", msgWithUserInfo);
   });
 
   //Handle disconnection

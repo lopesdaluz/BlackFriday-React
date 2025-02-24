@@ -37,6 +37,14 @@ export function Login({ setIsLoggedIn }) {
       console.log("Response from backend", data);
 
       if (response.ok) {
+        //store the user's username and userId in localStorage after successfull login
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            username: data.username,
+            userId: data.userId,
+          })
+        );
         alert("Login sueccessful");
         setIsLoggedIn(true);
         navigate("/");
