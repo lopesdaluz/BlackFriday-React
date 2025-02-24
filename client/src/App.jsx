@@ -1,6 +1,6 @@
 import "../src/Styles/App.css";
 import { Home } from "./Pages/Home";
-import { Deals } from "./Pages/Deals";
+import Deals from "./Pages/Deals";
 import { Categories } from "./Pages/Categories";
 import { About } from "./Pages/About";
 import { Login } from "./Pages/Login";

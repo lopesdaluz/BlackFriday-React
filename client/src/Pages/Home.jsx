@@ -12,10 +12,15 @@ export function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [homeSearchQuery, setHomeSearchQuery] = useState("");
+  const [artSearchQuery, setArtSearchQuery] = useState("");
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+  const handleSearchChange = (event, category) => {
+    if (category === "Home") {
+      setHomeSearchQuery(event.target.value);
+    } else if (category === "art") {
+      setArtSearchQuery(event.target.value);
+    }
   };
 
   const handleCategoryClick = (category) => {
@@ -29,11 +34,13 @@ export function Home() {
   };
 
   useEffect(() => {
-    if (searchQuery.trim()) {
-      fetchArtItems();
+    if (homeSearchQuery.trim()) {
       fetchHomeImages();
     }
-  }, [searchQuery]);
+    if (artSearchQuery.trim()) {
+      fetchArtItems();
+    }
+  }, [homeSearchQuery, artSearchQuery]);
 
   const fetchArtItems = async () => {
     setLoading(true); // Start loading
@@ -62,31 +69,28 @@ export function Home() {
         const objects = await objectsResponse.json();
         console.log("Objects fetched:", objects);
 
+        // Filter art items by search query
         const filteredArtItems = objects.objectIDs
           .slice(0, 10)
-          .filter((objectId) =>
-            objectId.toString().includes(searchQuery.toLowerCase())
-          );
-
-        const artItems = await Promise.all(
-          objects.objectIDs.slice(0, 10).map(async (objectId) => {
-            console.log("Fetching object with ID:", objectId);
+          .map(async (objectId) => {
             const objectResponse = await fetch(
               `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
             );
             const item = await objectResponse.json();
-            console.log("Fetched object:", item);
             return item;
-          })
+          });
+        const artItems = await Promise.all(filteredArtItems);
+        // Filter only when there's a search query and trim any extra spaces
+        const searchedArtItems = artItems.filter((item) =>
+          artSearchQuery.trim() !== ""
+            ? item.title.toLowerCase().includes(artSearchQuery.toLowerCase())
+            : true
         );
-        console.log("All art items fetched:", artItems);
-        setCategories({
-          ...categories,
-          art: artItems,
-        });
-      } else {
-        console.log("Art Department not found.");
-        setError("Art department not found.");
+
+        setCategories((prevCategories) => ({
+          ...prevCategories,
+          art: searchedArtItems,
+        }));
       }
     } catch (err) {
       console.error("Error fetching art items:", err);
@@ -116,9 +120,17 @@ export function Home() {
       const data = await response.json();
       console.log("Home images fetched:", data);
 
+      // Filter home items by search query
+      const filteredHomeItems = data.photos.filter(
+        (photo) =>
+          photo.photographer
+            .toLowerCase()
+            .includes(homeSearchQuery.toLowerCase()) // Use homeSearchQuery for filtering
+      );
+
       setCategories((prevCategories) => ({
         ...prevCategories,
-        Home: data.photos,
+        Home: filteredHomeItems,
       }));
     } catch (err) {
       console.error("Error fetching home images:", err);
@@ -137,8 +149,8 @@ export function Home() {
           key={category}
           category={category}
           onClick={() => handleCategoryClick(category)}
-          searchQuery={searchQuery}
-          handleSearchChange={handleSearchChange}
+          searchQuery={category === "Home" ? homeSearchQuery : artSearchQuery}
+          handleSearchChange={(event) => handleSearchChange(event, category)}
         />
       ))}
 
@@ -148,6 +160,7 @@ export function Home() {
     </div>
   );
 }
+
 //   return (
 //     <div>
 //       <h1>Choose a category and create or find deals</h1>
