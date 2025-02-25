@@ -10,12 +10,13 @@ function Deals() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socket.on("receive_message", (msg) => {
+    socket.on("receiveMessage", (msg) => {
+      console.log("Received message:", msg);
       setMessages((prevMessages) => [...prevMessages, msg]);
     });
 
     return () => {
-      socket.off("receive_message");
+      socket.off("receiveMessage");
     };
   }, []);
 
@@ -23,7 +24,7 @@ function Deals() {
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (message.trim()) {
       socket.emit("sendMessage", {
-        message,
+        message: message,
         username: user.username,
         userId: user.userId,
       }); // Emit message to the backend
@@ -39,7 +40,7 @@ function Deals() {
         {messages.map((msg, index) => (
           <div key={index} className="message">
             <strong>{msg.username}:</strong>
-            {msg.text}
+            {msg.message}
           </div>
         ))}
       </div>
