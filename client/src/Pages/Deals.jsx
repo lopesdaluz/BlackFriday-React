@@ -20,14 +20,13 @@ function Deals() {
   }, []);
 
   const handleSendMessage = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     if (message.trim()) {
-      const msgWithUserInfo = {
-        text: message,
-        user: user.username,
+      socket.emit("sendMessage", {
+        message,
+        username: user.username,
         userId: user.userId,
-      };
-      socket.emit("send_message", msgWithUserInfo); // Emit message to the backend
+      }); // Emit message to the backend
       // setMessages((prevMessages) => [...prevMessages, message]); // Add message to UI
       setMessage("");
     }
@@ -39,7 +38,7 @@ function Deals() {
       <div className="chat-box">
         {messages.map((msg, index) => (
           <div key={index} className="message">
-            <strong>{msg.user}:</strong>
+            <strong>{msg.username}:</strong>
             {msg.text}
           </div>
         ))}
