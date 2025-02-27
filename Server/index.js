@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
 
   // Handle incoming messages
   socket.on("sendMessage", async ({ userId, username, message }) => {
+    console.log("Received message on the server:", message);
     const newMessage = new Message({
       userId,
       username,
