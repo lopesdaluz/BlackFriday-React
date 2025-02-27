@@ -33,12 +33,22 @@ io.on("connection", (socket) => {
 
   // Handle incoming messages
   socket.on("sendMessage", async ({ userId, username, message }) => {
-    const newMessage = new Message({ userId, username, text: message });
+    const newMessage = new Message({
+      userId,
+      username,
+      text: message,
+      timestamp: new Date(),
+    });
 
     try {
       await newMessage.save(); // Save message to MongoDB
       console.log("Message saved:", newMessage);
-      io.emit("receiveMessage", { userId, username, text: message });
+      io.emit("receiveMessage", {
+        userId,
+        username,
+        text: newMessage.text,
+        timestamp: newMessage.timestamp,
+      });
     } catch (err) {
       console.error("Error saving message:", err);
     }

@@ -40,7 +40,10 @@ function Deals() {
         {messages.map((msg, index) => (
           <div key={index} className="message">
             <strong>{msg.username}:</strong>
-            {msg.message}
+            {msg.text}
+            <span className="timestamp">
+              ({new Date(msg.timestamp).toLocaleTimeString()})
+            </span>
           </div>
         ))}
       </div>
