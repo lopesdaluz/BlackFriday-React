@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import "../Styles/Deals.css";
+import Avatar from "react-avatar";
 
 const socket = io("http://localhost:3001");
 
@@ -29,16 +30,15 @@ function Deals() {
   }, []);
 
   const handleSendMessage = () => {
-    const user = JSON.parse(sessionStorage.getItem("user"));
     if (message.trim() && selectedUserId) {
       socket.emit("sendPrivateMessage", {
-        toUserId: selectedUserId, //send message to selected user
+        toUserId: selectedUserId, // Send message to selected user
         message: message,
-      }); // Emit message to the backend
-      // setMessages((prevMessages) => [...prevMessages, message]); // Add message to UI
+      });
+
       setMessage("");
     } else {
-      alert("please select a user and enter a message");
+      alert("Please select a user and enter a message.");
     }
   };
 
@@ -49,42 +49,44 @@ function Deals() {
   return (
     <div>
       <h2>Deals Chat</h2>
-      {/*User selection*/}
+      {/*User Selection */}
       <div className="user-selection">
-        <h3>Select a user to send a private message</h3>
+        <h3>Select a user to send a message:</h3>
         <ul>
-          {users.map((user) => {
-            return (
-              <li
-                key={user._id}
-                onClick={() => handleUserSelection(user._id)} // Set selected user
-                className={selectedUserId === user._id ? "selected" : ""}
-              >
-                {user.username}
-              </li>
-            );
-          })}
+          {users.map((user) => (
+            <li
+              key={user._id}
+              onClick={() => handleUserSelection(user._id)}
+              className={`user-item ${
+                selectedUserId === user._id ? "selected" : ""
+              }`}
+            >
+              <Avatar name={user.username} size="40" round={true} />
+              <span>{user.username}</span>
+            </li>
+          ))}
         </ul>
       </div>
+
+      {/*chat message */}
 
       <div className="chat-box">
         {messages.map((msg, index) => (
           <div key={index} className="message">
-            <strong>{msg.username}:</strong>
-            {msg.text}
+            <strong>{msg.username}:</strong> {msg.text}
             <span className="timestamp">
               ({new Date(msg.timestamp).toLocaleTimeString()})
             </span>
           </div>
         ))}
       </div>
-
+      {/*chat input */}
       <div className="chat-input">
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message"
+          placeholder="Type a message..."
         />
         <button onClick={handleSendMessage}>Send</button>
       </div>

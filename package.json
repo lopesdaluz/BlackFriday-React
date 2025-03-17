@@ -191,6 +191,7 @@
     "pstree.remy": "^1.1.8",
     "punycode": "^2.3.1",
     "react": "^18.3.1",
+    "react-avatar": "^5.0.3",
     "react-dom": "^18.3.1",
     "react-fast-compare": "^2.0.4",
     "react-is": "^16.13.1",

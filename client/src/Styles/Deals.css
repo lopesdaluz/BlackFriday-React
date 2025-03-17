@@ -65,6 +65,24 @@ transition: 0.3s;
   background: #ffdd44;
 }
 
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.user-item:hover {
+  background: #f0f0f0;
+}
+
+.user-item.selected {
+  background: #007bff; /* Blue background when selected */
+  color: white;
+  font-weight: bold;
+}
 
 
 
