@@ -31,25 +31,34 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  // Handle incoming messages
-  socket.on("sendMessage", async ({ userId, username, message }) => {
-    console.log("Received message on the server:", message);
+  // User joins their private room
+  socket.on("join", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined their private room ${userId}`);
+  });
+
+  // only send message to the intended user
+  socket.on("sendPrivateMessage", async ({ toUserId, fromUserId, message }) => {
+    console.log(
+      `Private message from ${fromUserId} to ${toUserId}: ${message}`
+    );
     const newMessage = new Message({
-      userId,
-      username,
+      userId: fromUserId,
+      toUserId,
       text: message,
       timestamp: new Date(),
     });
 
     try {
-      await newMessage.save(); // Save message to MongoDB
-      console.log("Message saved:", newMessage);
-      io.emit("receiveMessage", {
-        userId,
-        username,
-        text: newMessage.text,
+      await newMessage.save();
+      const messageData = {
+        fromUserId,
+        toUserId,
+        message: message,
         timestamp: newMessage.timestamp,
-      });
+      };
+      io.to(toUserId).emit("receiveMessage", messageData); // Skicka till mottagaren
+      io.to(fromUserId).emit("receiveMessage", messageData); // Skicka till avsändaren
     } catch (err) {
       console.error("Error saving message:", err);
     }
@@ -59,6 +68,30 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
+});
+
+//route to get messages between two users
+app.get("/messages/:fromUserId/:toUserId", async (req, res) => {
+  const { fromUserId, toUserId } = req.params;
+  try {
+    const messages = await Message.find({
+      $or: [
+        { userId: fromUserId, toUserId: toUserId },
+        { userId: toUserId, toUserId: fromUserId },
+      ],
+    }).sort({ timestamp: 1 }); // Sortera efter tid
+    res.json(
+      messages.map((msg) => ({
+        fromUserId: msg.userId,
+        toUserId: msg.toUserId,
+        message: msg.text,
+        timestamp: msg.timestamp,
+      }))
+    );
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 // Import the users router from the routes folder

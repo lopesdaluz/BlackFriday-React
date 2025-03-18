@@ -7,10 +7,21 @@ import { Login } from "./Pages/Login";
 import { Register } from "./Pages/Register";
 import LogoutButton from "./Pages/Logout";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  // Hämta användarinformation från sessionStorage vid uppstart
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+      const { userId } = JSON.parse(storedUser);
+      setCurrentUserId(userId);
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   return (
     <div className="App">
@@ -44,7 +55,16 @@ function App() {
             element={<Login setIsLoggedIn={setIsLoggedIn} />}
           />
           <Route path="/" element={<Home />} />
-          <Route path="/deals" element={<Deals />} />
+          <Route
+            path="/deals"
+            element={
+              isLoggedIn && currentUserId ? (
+                <Deals currentUserId={currentUserId} />
+              ) : (
+                <p>Please log in to access Deals and chat</p>
+              )
+            }
+          />
           <Route path="/categories" element={<Categories />} />
           <Route path="/about" element={<About />} />
         </Routes>

@@ -1,3 +1,4 @@
+//Endpoints
 const express = require("express");
 const router = express.Router();
 // const { Users } = require("../models");
@@ -77,6 +78,30 @@ router.get("/users", async (req, res) => {
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).send("Error fetching users");
+  }
+});
+
+//route to get messages between two users
+router.get("auth/messages/:fromUserId/:toUserId", async (req, res) => {
+  const { fromUserId, toUserId } = req.params;
+  try {
+    const messages = await Message.find({
+      $or: [
+        { userId: fromUserId, toUserId: toUserId },
+        { userId: toUserId, toUserId: fromUserId },
+      ],
+    }).sort({ timestamp: 1 }); // Sortera efter tid
+    res.json(
+      messages.map((msg) => ({
+        fromUserId: msg.userId,
+        toUserId: msg.toUserId,
+        message: msg.text,
+        timestamp: msg.timestamp,
+      }))
+    );
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
