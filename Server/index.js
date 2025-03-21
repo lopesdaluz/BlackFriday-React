@@ -112,7 +112,7 @@ app.get("/messages", async (req, res) => {
 });
 
 // Import the users router from the routes folder
-const usersRouter = require("./routes/Users");
+const usersRouter = require("./routes/Users")(io);
 // Use the user router for any requests to the /auth endpoint
 app.use("/auth", usersRouter);
 

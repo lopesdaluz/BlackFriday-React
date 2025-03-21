@@ -35,9 +35,20 @@ function Deals({ currentUserId }) {
       });
     });
 
+    //Lyssna på nya användare
+    socket.on("userRegistered", (newUser) => {
+      setUsers((prevUsers) => {
+        if (!prevUsers.some((user) => user._id === newUser._id)) {
+          return [...prevUsers, newUser];
+        }
+        return prevUsers;
+      });
+    });
+
     //cleanup function
     return () => {
       socket.off("receiveMessage");
+      socket.off("userRegistered");
     };
   }, [currentUserId]);
 

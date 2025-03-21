@@ -7,35 +7,23 @@ const bcrypt = require("bcrypt");
 
 //Registration route
 router.post("/register", async (req, res) => {
-  console.log("Received registration request:", req.body);
-
   const { name, lastname, email, username, password } = req.body;
-
   try {
-    //check if a user already exist
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ error: "username already taken!" });
-    }
-
-    //Hash password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("Hashed password:", hashedPassword);
-    //create a new user
-    const newUser = await User.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
       name,
       lastname,
       email,
       username,
       password: hashedPassword,
     });
-    return res
-      .status(201)
-      .json({ message: "User created successfully", user: newUser });
-  } catch (err) {
-    console.error("Error during registration:", err);
-    return res.status(500).json({ error: "Failed to create user" });
+    await user.save();
+    //Skicka event till alla klienter
+    io.emit("userRegistered", { _id: user._, username: user.username });
+
+    res.status(201).json({ message: "User created successfully", user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
