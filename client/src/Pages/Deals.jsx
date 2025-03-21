@@ -18,7 +18,10 @@ function Deals({ currentUserId }) {
     //fetch users from the backend
     fetch("http://localhost:3001/auth/users")
       .then((response) => response.json())
-      .then((data) => setUsers(data))
+      .then((data) => {
+        const filteredData = data.filter((user) => user._id !== currentUserId);
+        setUsers(filteredData);
+      })
       .catch((error) => console.error("Error fetching users:", error));
 
     //Joing priivate room
@@ -38,7 +41,10 @@ function Deals({ currentUserId }) {
     //Lyssna på nya användare
     socket.on("userRegistered", (newUser) => {
       setUsers((prevUsers) => {
-        if (!prevUsers.some((user) => user._id === newUser._id)) {
+        if (
+          newUser._id !== currentUserId &&
+          !prevUsers.some((user) => user._id === newUser._id)
+        ) {
           return [...prevUsers, newUser];
         }
         return prevUsers;
@@ -99,6 +105,7 @@ function Deals({ currentUserId }) {
           <input
             type="text"
             placeholder="Search users..."
+            value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
