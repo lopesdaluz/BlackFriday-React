@@ -11,6 +11,7 @@ function Deals({ currentUserId }) {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]); // to store list of users
   const [selectedUserId, setSelectedUserId] = useState(null); // to store the selectd user for private message
+  const [searchQuery, setSearchQuery] = useState(""); // a state for search after a user
 
   useEffect(() => {
     if (!currentUserId) return;
@@ -21,7 +22,6 @@ function Deals({ currentUserId }) {
       .catch((error) => console.error("Error fetching users:", error));
 
     //Joing priivate room
-
     socket.emit("join", currentUserId);
     console.log(`ℹ️ Joining room with ID: ${currentUserId}`);
 
@@ -74,61 +74,75 @@ function Deals({ currentUserId }) {
     }
   };
 
+  //Filter users based on search query
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div>
+    <div className="deals-container">
       <h2>Deals Chat</h2>
-      {/*User Selection */}
-      <div className="user-selection">
-        <h3>Select a user to send a message:</h3>
-        <ul>
-          {users.map((user) => (
-            <li
-              key={user._id}
-              onClick={() => handleUserSelection(user._id)}
-              className={`user-item ${
-                selectedUserId === user._id ? "selected" : ""
-              }`}
-            >
-              <Avatar name={user.username} size="40" round={true} />
-              <span>{user.username}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/*chat message */}
-
-      <div className="chat-box">
-        {messages
-          .filter(
-            (msg) =>
-              (msg.fromUserId === currentUserId &&
-                msg.toUserId === selectedUserId) ||
-              (msg.fromUserId === selectedUserId &&
-                msg.toUserId === currentUserId)
-          )
-          .map((msg, index) => (
-            <div key={index} className="message">
-              <strong>
-                {msg.fromUserId === currentUserId ? "You" : msg.fromUserId}:
-              </strong>{" "}
-              {msg.message}
-              <span className="timestamp">
-                ({new Date(msg.timestamp).toLocaleTimeString()})
-              </span>
-            </div>
-          ))}
-      </div>
-
-      {/*chat input */}
-      <div className="chat-input">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message..."
-        />
-        <button onClick={handleSendMessage}>Send</button>
+      <div className="chat-layout">
+        {/*User Selection Sidebar*/}
+        <div className="user-sidebar">
+          <input
+            type="text"
+            placeholder="Search users..."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          <div className="user-list">
+            {filteredUsers.map((user) => (
+              <div
+                key={user._id}
+                onClick={() => handleUserSelection(user._id)}
+                className={`user-card ${
+                  selectedUserId === user._id ? "selected" : ""
+                }`}
+              >
+                <Avatar name={user.username} size="40" round={true} />
+                <span className="username">{user.username}</span>
+                {/*statusIndikation*/}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/*Chat Area*/}
+        <div className="chat-area">
+          <div className="chat-box">
+            {messages
+              .filter(
+                (msg) =>
+                  (msg.fromUserId === currentUserId &&
+                    msg.toUserId === selectedUserId) ||
+                  (msg.fromUserId === selectedUserId &&
+                    msg.toUserId === currentUserId)
+              )
+              .map((msg, index) => (
+                <div
+                  key={index}
+                  className={`message ${
+                    msg.fromUserId === currentUserId ? "sent" : "received"
+                  }`}
+                >
+                  <span className="message-text">{msg.message}</span>
+                  <span className="timestamp">
+                    {new Date(msg.timestamp).toLocaleTimeString()}
+                  </span>
+                </div>
+              ))}
+          </div>
+          <div className="chat-input">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type a message..."
+              autoFocus={selectedUserId !== null}
+            />
+            <button onClick={handleSendMessage}>Send</button>
+          </div>
+        </div>
       </div>
     </div>
   );

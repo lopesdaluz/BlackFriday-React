@@ -16,7 +16,6 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Import the Message model (You need to define this in your models folder)
 const Message = require("./models/message");
 
 // Setup Socket.io
@@ -90,6 +89,24 @@ app.get("/messages/:fromUserId/:toUserId", async (req, res) => {
     );
   } catch (error) {
     console.error("Error fetching messages:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// NY ROUTE: Hämta alla meddelanden
+app.get("/messages", async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ timestamp: 1 }); // Hämta alla meddelanden, sorterade efter tid
+    res.json(
+      messages.map((msg) => ({
+        fromUserId: msg.userId,
+        toUserId: msg.toUserId,
+        message: msg.text,
+        timestamp: msg.timestamp,
+      }))
+    );
+  } catch (error) {
+    console.error("Error fetching all messages:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
