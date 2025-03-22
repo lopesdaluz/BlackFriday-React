@@ -6,19 +6,25 @@ import { About } from "./Pages/About";
 import { Login } from "./Pages/Login";
 import { Register } from "./Pages/Register";
 import LogoutButton from "./Pages/Logout";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(null);
+  const [user, setUser] = useState(null);
 
   // Hämta användarinformation från sessionStorage vid uppstart
   useEffect(() => {
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
-      const { userId } = JSON.parse(storedUser);
-      setCurrentUserId(userId);
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
       setIsLoggedIn(true);
     }
   }, []);
@@ -35,7 +41,7 @@ function App() {
                 <Link to="/Login">Login</Link>
               </>
             ) : (
-              <span>Welcome, User!</span>
+              <span>Welcome, {user?.username}!</span>
             )}
             <Link to="/">Home</Link>
             <Link to="/Deals">Deals</Link>
@@ -58,10 +64,13 @@ function App() {
           <Route
             path="/deals"
             element={
-              isLoggedIn && currentUserId ? (
-                <Deals currentUserId={currentUserId} />
+              isLoggedIn && user ? (
+                <Deals
+                  currentUserId={user.userId}
+                  currentUsername={user.username}
+                />
               ) : (
-                <p>Please log in to access Deals and chat</p>
+                <Navigate to="/login" />
               )
             }
           />

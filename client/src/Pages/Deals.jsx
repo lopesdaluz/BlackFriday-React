@@ -6,7 +6,7 @@ import Avatar from "react-avatar";
 
 const socket = io("http://localhost:3001");
 
-function Deals({ currentUserId }) {
+function Deals({ currentUserId, currentUsername }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]); // to store list of users
@@ -102,6 +102,11 @@ function Deals({ currentUserId }) {
       <div className="chat-layout">
         {/*User Selection Sidebar*/}
         <div className="user-sidebar">
+          {/* Visa inloggad användare */}
+          <div className="current-user-profile">
+            <Avatar name={currentUsername} size="40" round={true} />
+            <span className="current-username">You: {currentUsername}</span>
+          </div>
           <input
             type="text"
             placeholder="Search users..."
